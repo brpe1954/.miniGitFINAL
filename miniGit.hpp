@@ -8,21 +8,25 @@ using namespace std;
 #include <filesystem>
 namespace fs = std::filesystem;
 
-struct doublyNode{
+struct singlyNode
+{
+    string fileName; // Name of local file
+    string fileVersion; // Name of file in .minigit folder
+    singlyNode * next;
+};
+struct doublyNode
+{
     int commitNumber;
     singlyNode *head;
     doublyNode *previous;
     doublyNode *next;
 };
-struct singlyNode{
-    string fileName; // Name of local file
-    string fileVersion; // Name of file in .minigit folder
-    singlyNode * next;
-};
 
-class miniGit{
+class miniGit
+{
     private:
         /* data */
+        doublyNode* head;
     public:
         miniGit(/* args */);
         ~miniGit();
@@ -34,12 +38,15 @@ class miniGit{
         bool commit();
 };
 
-miniGit::miniGit(/* args */){
+miniGit::miniGit(/* args */)
+{
     fs::remove_all(".minigit");       // remove directory and its contents
     fs::create_directory(".minigit"); // create a new directory
 }
 
-miniGit::~miniGit(){
+miniGit::~miniGit()
+{
+
 }
 
 #endif

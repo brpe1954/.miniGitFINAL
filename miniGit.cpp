@@ -5,18 +5,19 @@
 using namespace std;
 namespace fs = std::filesystem;
 
-void miniGit::init(){
-
+void miniGit::init()
+{
+    head->commitNumber = 0;
 }
-bool miniGit::addFile(){
+bool miniGit::addFile()
+{
     
 }
-bool miniGit::addFile(){
+bool miniGit::rmFile()
+{
 
 }
-bool miniGit::rmFile(){
-
-}
-bool miniGit::commit(){
+bool miniGit::commit()
+{
     
 }

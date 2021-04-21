@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include "miniGit.hpp"
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -16,6 +17,7 @@ int main(int argc, char *argv[])
     {
         int menuInput;
         string inputLine;
+        miniGit* MG = new miniGit();
 
         cout << "======Main Menu======" << endl;
         cout << "1. Init Repo" << endl;
@@ -34,10 +36,12 @@ int main(int argc, char *argv[])
             if (!initialized)
             {
                 initialized = true;
-                // MG = new miniGit();
-                // MG->init();
+                MG->init();
             }
-            cout << "you selected 1" << endl;
+            else
+            {
+                cout << "you selected 1" << endl;
+            }
             break;
         case 2:
             // call addFile() function
@@ -45,7 +49,10 @@ int main(int argc, char *argv[])
             {
                 cout << "You must initialize a repository before adding files." << endl;
             }
-            cout << "you selected 2" << endl;
+            else
+            {
+                cout << "you selected 1" << endl;
+            }
             break;
         case 3:
             // call rmFile() function
@@ -53,7 +60,10 @@ int main(int argc, char *argv[])
             {
                 cout << "You must initialize a repository before removing files." << endl;
             }
-            cout << "you selected 3" << endl;
+            else
+            {
+                cout << "you selected 1" << endl;
+            }
             break;
         case 4:
             // call the commit() function
@@ -61,7 +71,10 @@ int main(int argc, char *argv[])
             {
                 cout << "You must initialize a repository before making commits." << endl;
             }
-            cout << "you selected 4" << endl;
+            else
+            {
+                cout << "you selected 1" << endl;
+            }
             break;
         case 5:
             // quit the program
