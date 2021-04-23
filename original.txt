@@ -1,0 +1,3 @@
+hello this is a test
+document with multiple
+lines of text to copy
