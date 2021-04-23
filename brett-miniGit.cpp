@@ -125,10 +125,10 @@ void file_copy(string input_file_name, string output_file_name)
 
 bool isEqual(string file1, string file2)
 {
-    
+    return false;
 }
 
 bool miniGit::commit()
 {
-    
+    return false;
 }
