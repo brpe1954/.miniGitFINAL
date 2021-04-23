@@ -48,6 +48,7 @@ void miniGit::addFile(string file_to_add)
         fileNode* new_file = new fileNode();
         new_file->fileName = file_to_add;
         new_file->fileVersion = "0";
+        new_file->versionNum = 0;
         new_file->next = commit_head->file_head;
         commit_head->file_head = new_file;
 
@@ -125,10 +126,42 @@ void file_copy(string input_file_name, string output_file_name)
 
 bool isEqual(string file1, string file2)
 {
-    return false;
+    ifstream fileStream;
+    string fileOne;
+    fileStream.open(file1);
+    ifstream fileStream2;
+    string fileTwo;
+    fileStream2.open(file2);
+    while(getline(fileStream,fileOne) && getline(fileStream2, fileTwo)){
+        if(fileOne.compare(fileTwo) != 0){
+            return false;
+        }
+    }
+    return true;
 }
 
 bool miniGit::commit()
 {
+
+    fileNode* crawl = commit_head->file_head;
+    while(crawl != nullptr){
+        if(!fs::exists(crawl->fileName + crawl->fileVersion)){
+            file_copy(crawl->fileName, crawl->fileName + crawl->fileVersion);
+            string newVersion = crawl->fileName + crawl->fileVersion;
+            string newVersionLoc = ".minigit" + newVersion;
+            fs::rename(newVersion, newVersionLoc);
+        }
+        else{
+            if(!isEqual(crawl->fileName, crawl->fileName + crawl->fileVersion)){
+                crawl->versionNum++;
+                crawl->fileVersion = to_string(crawl->versionNum);
+                file_copy(crawl->fileName, crawl->fileName + crawl->fileVersion);
+                string newVersion = crawl->fileName + crawl->fileVersion;
+                string newVersionLoc = ".minigit" + newVersion;
+                fs::rename(newVersion, newVersionLoc);
+            }
+        }
+    }
+    
     return false;
 }

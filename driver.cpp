@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
         int menuInput;
         string inputLine;
         miniGit *MG = new miniGit();
+        MG->init();
 
         cout << "======Main Menu======" << endl;
         cout << "1. Init Repo" << endl;
@@ -35,9 +36,9 @@ int main(int argc, char *argv[])
         case 1:
             if (!initialized)
             {
-                cout << "you selected 1" << endl;
+                cout << "You selected 1: Initialize" << endl;
                 initialized = true;
-                MG->init();
+                cout << "Initialized" << endl;
             }
             else
             {
@@ -52,24 +53,27 @@ int main(int argc, char *argv[])
             }
             else
             {
-                cout << "you selected 2" << endl;
-                // bool exists = true;
-                // while(exists)
-                // {
-                //     cout << "Enter valid filename" << endl;
-                //     getline(cin, inputLine);
-                //     if(fs::exists(inputLine)){
-                //         exists = false;
-                //         MG->addFile(inputLine);
-                //     }
-                // }
-
-                cout << "Enter valid filename" << endl;
-                getline(cin, inputLine);
-                if (fs::exists(inputLine))
+                cout << "You selected 2: Add" << endl;
+                bool exists = true;
+                while(exists)
                 {
-                    MG->addFile(inputLine);
+                    cout << "Enter valid filename to add" << endl;
+                    getline(cin, inputLine);
+                    if(fs::exists(inputLine)){
+                        exists = false;
+                        MG->addFile(inputLine);
+                    }
+                    else{
+                        cout << "File does not exist in current directory, try again" << endl;
+                    }
                 }
+
+                // cout << "Enter valid filename" << endl;
+                // getline(cin, inputLine);
+                // if (fs::exists(inputLine))
+                // {
+                //     MG->addFile(inputLine);
+                // }
             }
             break;
         case 3:
@@ -80,7 +84,12 @@ int main(int argc, char *argv[])
             }
             else
             {
-                cout << "you selected 1" << endl;
+                cout << "You selected 3: Remove" << endl;
+                cout << "Enter valid filename to remove" << endl;
+                    getline(cin, inputLine);
+                    if(fs::exists(inputLine)){
+                        MG->rmFile(inputLine);
+                    }
             }
             break;
         case 4:
@@ -91,7 +100,8 @@ int main(int argc, char *argv[])
             }
             else
             {
-                cout << "you selected 1" << endl;
+                cout << "You selected 4: Commit" << endl;
+                MG->commit();
             }
             break;
         case 5:

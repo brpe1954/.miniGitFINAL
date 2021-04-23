@@ -12,6 +12,7 @@ struct fileNode
 {
     string fileName; // Name of local file
     string fileVersion; // Name of file in .minigit folder
+    int versionNum;
     fileNode * next;
 };
 struct branchNode
