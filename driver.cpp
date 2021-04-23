@@ -7,7 +7,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    // miniGit *MG;
+    miniGit *MG;
     bool quit = false;
     bool initialized = false;
     string s_input;
@@ -35,12 +35,13 @@ int main(int argc, char *argv[])
         case 1:
             if (!initialized)
             {
+                cout << "you selected 1" << endl;
                 initialized = true;
                 MG->init();
             }
             else
             {
-                cout << "you selected 1" << endl;
+                cout << "You have already initialized a repository" << endl;
             }
             break;
         case 2:
@@ -52,6 +53,16 @@ int main(int argc, char *argv[])
             else
             {
                 cout << "you selected 1" << endl;
+                bool exists = true;
+                while(exists)
+                {
+                    cout << "Enter valid filename" << endl;
+                    getline(cin, inputLine);
+                    if(fs::exists(inputLine)){
+                        exists = false;
+                        MG->addFile(inputLine);
+                    }
+                }
             }
             break;
         case 3:
