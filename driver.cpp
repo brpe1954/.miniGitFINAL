@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include "miniGit.hpp"
+#include "brett-miniGit.hpp"
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     {
         int menuInput;
         string inputLine;
-        miniGit* MG = new miniGit();
+        miniGit *MG = new miniGit();
 
         cout << "======Main Menu======" << endl;
         cout << "1. Init Repo" << endl;
@@ -52,16 +52,23 @@ int main(int argc, char *argv[])
             }
             else
             {
-                cout << "you selected 1" << endl;
-                bool exists = true;
-                while(exists)
+                cout << "you selected 2" << endl;
+                // bool exists = true;
+                // while(exists)
+                // {
+                //     cout << "Enter valid filename" << endl;
+                //     getline(cin, inputLine);
+                //     if(fs::exists(inputLine)){
+                //         exists = false;
+                //         MG->addFile(inputLine);
+                //     }
+                // }
+
+                cout << "Enter valid filename" << endl;
+                getline(cin, inputLine);
+                if (fs::exists(inputLine))
                 {
-                    cout << "Enter valid filename" << endl;
-                    getline(cin, inputLine);
-                    if(fs::exists(inputLine)){
-                        exists = false;
-                        MG->addFile(inputLine);
-                    }
+                    MG->addFile(inputLine);
                 }
             }
             break;
