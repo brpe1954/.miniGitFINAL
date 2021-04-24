@@ -7,7 +7,6 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    miniGit *MG;
     bool quit = false;
     bool initialized = false;
     string s_input;

@@ -8,5 +8,8 @@
 using namespace std;
 namespace fs = std::filesystem;
 int main(){
-    fs::rename("original.txt", ".minigit/original.txt");
+    miniGit *MG = new miniGit();
+    MG->init();
+    MG->addFile("original.txt");
+    MG->commit();
 }
