@@ -11,5 +11,9 @@ int main(){
     miniGit *MG = new miniGit();
     MG->init();
     MG->addFile("original.txt");
+    MG->addFile("original.txt");
+    MG->addFile("original3.txt");
+    MG->commit();
+    MG->addFile("original4.txt");
     MG->commit();
 }

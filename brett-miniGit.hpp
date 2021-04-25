@@ -36,7 +36,7 @@ class miniGit
         success or failiure returned, they could be switched to void*/
         void addFile(string file_to_add);
         void rmFile(string file_to_remove);
-        bool commit();
+        void commit();
 };
 
 #endif
