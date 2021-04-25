@@ -15,32 +15,50 @@ miniGit::miniGit(/* args */)
 
 miniGit::~miniGit()
 {
-
+    fs::remove_all(".minigit");
+    branchNode* crawlBranch = commit_head;
+    while(crawlBranch != NULL)
+    {
+        fileNode* crawl = crawlBranch->file_head;
+        fileNode* temp = NULL;
+        while(crawl != NULL)
+        {
+            temp = crawl;
+            crawl = crawl->next;
+            delete temp;
+        }
+        crawlBranch = crawlBranch->next;
+    }
 }
 
 void miniGit::init()
 {
     commit_head = new branchNode;   // branch nodes are doubly linked lists
     commit_head->commit_ID = 0; // initial file version is 0
-    commit_head->file_head = nullptr;   // head of file nodes stored in a singly linked 
-    commit_head->previous = nullptr; // pointer to previous branchNode in the doubly linked list 
-    commit_head->next = nullptr; // pointer to the next branchNode in the doubly linked list
+    commit_head->file_head = NULL; // head of file nodes stored in a singly linked 
+    // cout << "worked" << endl;
+    // fileNode* fileHead = commit_head->file_head;
+    // cout << "worked" << endl;
+    // fileHead->next = NULL;
+    // cout << "worked" << endl;
+    commit_head->previous = NULL; // pointer to previous branchNode in the doubly linked list 
+    commit_head->next = NULL; // pointer to the next branchNode in the doubly linked list
 }
 
 void miniGit::addFile(string file_to_add)
 {
-    if (commit_head == nullptr)
+    if (commit_head == NULL)
     {
         cout << "miniGit has not been initialized" << endl;
     }
     else
     {
         branchNode* crawlBranch = commit_head;
-        while(crawlBranch->next != nullptr){
+        while(crawlBranch->next != NULL){
             crawlBranch = crawlBranch->next;
         }
         fileNode *curr = crawlBranch->file_head; // initialized a curr pointer at the head of a file node SLL
-        while (curr != nullptr)
+        while (curr != NULL)
         {
             if (curr->fileName == file_to_add)
             {
@@ -49,32 +67,38 @@ void miniGit::addFile(string file_to_add)
             }
             curr = curr->next;
         }
-
-        fileNode* new_file = new fileNode();
+        fileNode* new_file = new fileNode;
         new_file->fileName = file_to_add;
         new_file->fileVersion = "0";
         new_file->versionNum = 0;
         new_file->next = commit_head->file_head;
         commit_head->file_head = new_file;
         cout << file_to_add << " was added" << endl;
+        // curr = crawlBranch->file_head;
+        // while (curr->next != NULL)
+        // {
+        //     curr = curr->next;
+        // }
+        // curr->next = new_file;
+        // cout << file_to_add << " was added" << endl;
         return;
     }
 }
 void miniGit::rmFile(string file_to_remove)
 {
-    if (commit_head == nullptr)
+    if (commit_head == NULL)
     {
         cout << "miniGit has not been initialized" << endl;
     }
     else
     {
         fileNode *curr = commit_head->file_head;
-        fileNode *prev = nullptr;
-        while (curr != nullptr)
+        fileNode *prev = NULL;
+        while (curr != NULL)
         {
             if (curr->fileName == file_to_remove)
             {
-                if (prev != nullptr) // 
+                if (prev != NULL) // 
                 {
                     prev->next = curr->next;
                     delete curr;
@@ -125,14 +149,14 @@ void miniGit::commit()
 {
     //search for most current commit
     branchNode* crawlBranch = commit_head;
-    while(crawlBranch->next != nullptr)
+    while(crawlBranch->next != NULL)
     {
         crawlBranch = crawlBranch->next;
     }
     //make a crawler from the commits file head
     fileNode* crawl = crawlBranch->file_head;
 
-    while(crawl != nullptr)
+    while(crawl != NULL)
     {
         if(!fs::exists(crawl->fileName + crawl->fileVersion)) //if file hasnt been added to .minigit before
         {
@@ -154,13 +178,13 @@ void miniGit::commit()
     branchNode* newCommit = new branchNode;
     crawlBranch->next = newCommit;
     newCommit->previous = crawlBranch;
-    newCommit->next = nullptr;
+    newCommit->next = NULL;
     newCommit->commit_ID = crawlBranch->commit_ID + 1;
 
     //copying old files from last commit into new list for the new commit
     fileNode* newFileList = new fileNode;
     crawl = crawlBranch->file_head;
-    while(crawl != nullptr)
+    while(crawl != NULL)
     {
         newFileList->fileName = crawl->fileName;
         newFileList->fileVersion = crawl->fileVersion;
@@ -168,5 +192,6 @@ void miniGit::commit()
         newFileList = newFileList->next;
         crawl = crawl->next;
     }
-    newFileList->next = nullptr;
+    newFileList->next = NULL;
+    cout << "commit worked" << endl;
 }
