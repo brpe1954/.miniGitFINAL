@@ -99,8 +99,8 @@ void miniGit::rmFile(string file_to_remove)
 
 void file_copy(string input_file_name, string output_file_name)
 {
-    string copyLine = "cp " + input_file_name + " ./.minigit/" + output_file_name;
-    system(copyLine.c_str());
+    string copy_command = "cp " + input_file_name + " ./.minigit/" + output_file_name;
+    system(copy_command.c_str());
 }
 
 bool isEqual(string file1, string file2)
@@ -116,9 +116,9 @@ bool isEqual(string file1, string file2)
             return false;
         }
     }
-    return true;
     fileStream2.close();
     fileStream.close();
+    return true;
 }
 
 void miniGit::commit()
