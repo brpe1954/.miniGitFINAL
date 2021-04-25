@@ -94,34 +94,8 @@ void miniGit::rmFile(string file_to_remove)
 
 void file_copy(string input_file_name, string output_file_name)
 {
-    ifstream input_file(input_file_name);
-    ofstream output_file(output_file_name);
-    char char1, char2;
-    bool flag = false;
-
-    if (!input_file.is_open())
-    {
-        cout << "failed to open input file" << endl;
-        return;
-    }
-    if (!output_file.is_open())
-    {
-        cout << "failed to open output file" << endl;
-        return;
-    }
-    
-    while (true)
-    {
-        char1 = input_file.get();
-        if (char1 == EOF)
-        {
-            break;
-            output_file << char1;
-        }
-    }
-    
-    input_file.close();
-    output_file.close();
+    string copy_command = "cp " + input_file_name + " ./.minigit/" + output_file_name;
+    system(copy_command.c_str());
 }
 
 bool isEqual(string file1, string file2)
@@ -137,12 +111,12 @@ bool isEqual(string file1, string file2)
             return false;
         }
     }
-    return true;
     fileStream2.close();
     fileStream.close();
+    return true;
 }
 
-bool miniGit::commit()
+void miniGit::commit()
 {
     branchNode* crawlBranch = commit_head;
     while(crawlBranch->next != nullptr){
@@ -151,26 +125,45 @@ bool miniGit::commit()
     fileNode* crawl = crawlBranch->file_head;
     while(crawl != nullptr){
         string newVersion = crawl->fileName + "__" + crawl->fileVersion;
-        string newVersionLoc = ".minigit/" + newVersion;
+        // string newVersionLoc = ".minigit/" + newVersion;
         if(!fs::exists(crawl->fileName + crawl->fileVersion)){
             file_copy(crawl->fileName, crawl->fileName + "__" + crawl->fileVersion);
-            fs::rename(newVersion, newVersionLoc);
+            // fs::rename(newVersion, newVersionLoc);
         }
         else{
             if(!isEqual(crawl->fileName, crawl->fileName + crawl->fileVersion)){
                 crawl->versionNum++;
                 crawl->fileVersion = to_string(crawl->versionNum);
                 string newVersion = crawl->fileName + "__" + crawl->fileVersion;
-                string newVersionLoc = ".minigit/" + newVersion;
+                // string newVersionLoc = ".minigit/" + newVersion;
                 file_copy(crawl->fileName, crawl->fileName + "__" + crawl->fileVersion);
-                fs::rename(newVersion, newVersionLoc);
+                // fs::rename(newVersion, newVersionLoc);
             }
         }
         crawl = crawl->next;
     }
-    branchNode* newCommit = crawlBranch;
+    // branchNode* newCommit = crawlBranch;
+    // newCommit->previous = crawlBranch;
+    // newCommit->next = nullptr;
+    // newCommit->commit_ID = crawlBranch->commit_ID + 1;
+    // new test code:::
+    branchNode* newCommit = new branchNode;
+    crawlBranch->next = newCommit;
     newCommit->previous = crawlBranch;
     newCommit->next = nullptr;
     newCommit->commit_ID = crawlBranch->commit_ID + 1;
-    return false;
+    // return false;
+
+    //copying old files from last commit into new list for the new commit
+    fileNode* newFileList = new fileNode;
+    crawl = crawlBranch->file_head;
+    while(crawl != nullptr)
+    {
+        newFileList->fileName = crawl->fileName;
+        newFileList->fileVersion = crawl->fileVersion;
+        newFileList->next = new fileNode;
+        newFileList = newFileList->next;
+        crawl = crawl->next;
+    }
+    newFileList->next = nullptr;
 }
