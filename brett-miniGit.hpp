@@ -27,8 +27,9 @@ class miniGit
 {
     private:
         /* data */
-        branchNode* commit_head;
+        // branchNode* commit_head;
     public:
+        branchNode* commit_head;
         miniGit(/* args */);
         ~miniGit();
         void init();

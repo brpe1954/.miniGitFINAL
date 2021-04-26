@@ -16,12 +16,12 @@ miniGit::miniGit(/* args */)
 miniGit::~miniGit()
 {
     fs::remove_all(".minigit");
-    branchNode* crawlBranch = commit_head;
-    while(crawlBranch != NULL)
+    branchNode *crawlBranch = commit_head;
+    while (crawlBranch != NULL)
     {
-        fileNode* crawl = crawlBranch->file_head;
-        fileNode* temp = NULL;
-        while(crawl != NULL)
+        fileNode *crawl = crawlBranch->file_head;
+        fileNode *temp = NULL;
+        while (crawl != NULL)
         {
             temp = crawl;
             crawl = crawl->next;
@@ -33,56 +33,53 @@ miniGit::~miniGit()
 
 void miniGit::init()
 {
-    commit_head = new branchNode;   // branch nodes are doubly linked lists
-    commit_head->commit_ID = 0; // initial file version is 0
-    commit_head->file_head = NULL; // head of file nodes stored in a singly linked 
-    // cout << "worked" << endl;
-    // fileNode* fileHead = commit_head->file_head;
-    // cout << "worked" << endl;
-    // fileHead->next = NULL;
-    // cout << "worked" << endl;
-    commit_head->previous = NULL; // pointer to previous branchNode in the doubly linked list 
-    commit_head->next = NULL; // pointer to the next branchNode in the doubly linked list
+    commit_head = new branchNode;  // branch nodes are doubly linked lists
+    commit_head->commit_ID = 0;    // initial file version is 0
+    commit_head->file_head = NULL; // head of file nodes stored in a singly linked
+    commit_head->previous = NULL;  // pointer to previous branchNode in the doubly linked list
+    commit_head->next = NULL;      // pointer to the next branchNode in the doubly linked list
 }
 
 void miniGit::addFile(string file_to_add)
 {
-    if (commit_head == NULL)
+    branchNode *branchCrawl = commit_head;
+    while (branchCrawl->next != NULL) // break out of the loop once we reach the last commit branch
     {
-        cout << "miniGit has not been initialized" << endl;
+        branchCrawl = branchCrawl->next; // keep looping until we reach the last commit branch
     }
-    else
+
+    fileNode *node_to_insert = branchCrawl->file_head;
+
+    if (node_to_insert == NULL) // case to insert a new head into an empty SLL
     {
-        branchNode* crawlBranch = commit_head;
-        while(crawlBranch->next != NULL){
-            crawlBranch = crawlBranch->next;
-        }
-        fileNode *curr = crawlBranch->file_head; // initialized a curr pointer at the head of a file node SLL
-        while (curr != NULL)
-        {
-            if (curr->fileName == file_to_add)
-            {
-                cout << "file already exists" << endl;
-                return;
-            }
-            curr = curr->next;
-        }
-        fileNode* new_file = new fileNode;
+        fileNode *new_file = new fileNode;
         new_file->fileName = file_to_add;
         new_file->fileVersion = "0";
         new_file->versionNum = 0;
-        new_file->next = commit_head->file_head;
+        new_file->next = NULL;
         commit_head->file_head = new_file;
         cout << file_to_add << " was added" << endl;
-        // curr = crawlBranch->file_head;
-        // while (curr->next != NULL)
-        // {
-        //     curr = curr->next;
-        // }
-        // curr->next = new_file;
-        // cout << file_to_add << " was added" << endl;
-        return;
     }
+    else
+    {
+        while (node_to_insert->next != NULL)
+        {
+            if (node_to_insert->fileName == file_to_add)
+            {
+                cout << file_to_add << " has already been added" << endl;
+                return;
+            }
+
+            node_to_insert = node_to_insert->next;
+        }
+        node_to_insert->next = new fileNode;
+        node_to_insert->next->fileName = file_to_add;
+        node_to_insert->next->fileVersion = "0";
+        node_to_insert->next->versionNum = 0;
+        node_to_insert->next->next = NULL;
+        cout << file_to_add << " was added" << endl;
+    }
+    return;
 }
 void miniGit::rmFile(string file_to_remove)
 {
@@ -98,7 +95,7 @@ void miniGit::rmFile(string file_to_remove)
         {
             if (curr->fileName == file_to_remove)
             {
-                if (prev != NULL) // 
+                if (prev != NULL) //
                 {
                     prev->next = curr->next;
                     delete curr;
@@ -106,10 +103,9 @@ void miniGit::rmFile(string file_to_remove)
                 }
                 else
                 {
-                    commit_head->file_head = curr->next;    // 
-                    delete curr; 
+                    commit_head->file_head = curr->next; //
+                    delete curr;
                 }
-                
             }
             // keep iterating across the SLL until we find the file_to_remove we are looking for
             prev = curr;
@@ -135,8 +131,10 @@ bool isEqual(string file1, string file2)
     ifstream fileStream2;
     string fileTwo;
     fileStream2.open(file2);
-    while(getline(fileStream,fileOne) && getline(fileStream2, fileTwo)){
-        if(fileOne.compare(fileTwo) != 0){
+    while (getline(fileStream, fileOne) && getline(fileStream2, fileTwo))
+    {
+        if (fileOne.compare(fileTwo) != 0)
+        {
             return false;
         }
     }
@@ -147,51 +145,100 @@ bool isEqual(string file1, string file2)
 
 void miniGit::commit()
 {
-    //search for most current commit
-    branchNode* crawlBranch = commit_head;
-    while(crawlBranch->next != NULL)
+    branchNode *branchCrawl = commit_head;
+    while (branchCrawl->next != NULL) // break out of the loop once we reach the last commit branch
     {
-        crawlBranch = crawlBranch->next;
+        branchCrawl = branchCrawl->next; // keep looping until we reach the last commit branch
     }
-    //make a crawler from the commits file head
-    fileNode* crawl = crawlBranch->file_head;
 
-    while(crawl != NULL)
+    fileNode *fileCrawl = branchCrawl->file_head;
+
+    // cout << "branchCrawl's commit_ID: " << branchCrawl->commit_ID << endl;
+    // cout << "fileCrawl's filename before looping: " << fileCrawl->fileName << endl;
+    // cout << "fileCrawl's next filename: " << fileCrawl->next->fileName << endl;
+
+    while (fileCrawl->next != NULL)
     {
-        if(!fs::exists(crawl->fileName + crawl->fileVersion)) //if file hasnt been added to .minigit before
+        if(fs::exists(fileCrawl->fileName + "__" + fileCrawl->fileVersion)) //if file hasnt been added to .minigit before
         {
-            file_copy(crawl->fileName, crawl->fileName + "__" + crawl->fileVersion);
+            if (isEqual(fileCrawl->fileName, fileCrawl->fileName + "__" +fileCrawl->fileVersion))
+            {
+                /* code */
+            }
+            
+            // file_copy(fileCrawl->fileName, fileCrawl->fileName + "__" + fileCrawl->fileVersion);
         }
         else
         {
-            //if file HAS been added, but changes have been made to the file since last commmit
-            if(!isEqual(crawl->fileName, crawl->fileName + crawl->fileVersion)) 
+            if file HAS been added, but changes have been made to the file since last commmit
+            if(!isEqual(fileCrawl->fileName, fileCrawl->fileName + fileCrawl->fileVersion))
             {
-                crawl->versionNum = crawl->versionNum + 1;
-                crawl->fileVersion = to_string(crawl->versionNum);
-                file_copy(crawl->fileName, crawl->fileName + "__" + crawl->fileVersion);
+                fileCrawl->versionNum = fileCrawl->versionNum + 1;
+                fileCrawl->fileVersion = to_string(fileCrawl->versionNum);
+                file_copy(fileCrawl->fileName, fileCrawl->fileName + "__" + fileCrawl->fileVersion);
             }
         }
-        crawl = crawl->next; 
-    }
-    //making new commit 
-    branchNode* newCommit = new branchNode;
-    crawlBranch->next = newCommit;
-    newCommit->previous = crawlBranch;
-    newCommit->next = NULL;
-    newCommit->commit_ID = crawlBranch->commit_ID + 1;
+        fileCrawl = fileCrawl->next;
 
-    //copying old files from last commit into new list for the new commit
-    fileNode* newFileList = new fileNode;
-    crawl = crawlBranch->file_head;
-    while(crawl != NULL)
-    {
-        newFileList->fileName = crawl->fileName;
-        newFileList->fileVersion = crawl->fileVersion;
-        newFileList->next = new fileNode;
-        newFileList = newFileList->next;
-        crawl = crawl->next;
+
+        file_copy(fileCrawl->fileName, fileCrawl->fileName + "__" + fileCrawl->fileVersion);
+        fileCrawl = fileCrawl->next;
+        cout << "fileCrawl's filename during the loop: " << fileCrawl->fileName << endl;
     }
-    newFileList->next = NULL;
-    cout << "commit worked" << endl;
+    file_copy(fileCrawl->fileName, fileCrawl->fileName + "__" + fileCrawl->fileVersion);
+    cout << "fileCrawl's filename during the loop: " << fileCrawl->fileName << endl;
+    cout << "finished copying!" << endl;
+    return;
 }
+
+// void miniGit::commit()
+// {
+//     search for most current commit
+//     branchNode* crawlBranch = commit_head;
+//     while(crawlBranch->next != NULL)
+//     {
+//         crawlBranch = crawlBranch->next;
+//     }
+//     make a crawler from the commits file head
+//     fileNode* crawl = crawlBranch->file_head;
+
+//     while(crawl != NULL)
+//     {
+//         if(!fs::exists(crawl->fileName + crawl->fileVersion)) //if file hasnt been added to .minigit before
+//         {
+//             file_copy(crawl->fileName, crawl->fileName + "__" + crawl->fileVersion);
+//         }
+//         else
+//         {
+//             if file HAS been added, but changes have been made to the file since last commmit
+//             if(!isEqual(crawl->fileName, crawl->fileName + crawl->fileVersion))
+//             {
+//                 crawl->versionNum = crawl->versionNum + 1;
+//                 crawl->fileVersion = to_string(crawl->versionNum);
+//                 file_copy(crawl->fileName, crawl->fileName + "__" + crawl->fileVersion);
+//             }
+//         }
+//         crawl = crawl->next;
+//     }
+//     making new commit
+//     branchNode* newCommit = new branchNode;
+//     crawlBranch->next = newCommit;
+//     newCommit->previous = crawlBranch;
+//     newCommit->next = NULL;
+//     newCommit->commit_ID = crawlBranch->commit_ID + 1;
+
+//     copying old files from last commit into new list for the new commit
+//     fileNode* newFileList = new fileNode;
+//     newCommit->file_head = newFileList;
+//     crawl = crawlBranch->file_head;
+//     while(crawl != NULL)
+//     {
+//         newFileList->fileName = crawl->fileName;
+//         newFileList->fileVersion = crawl->fileVersion;
+//         newFileList->next = new fileNode;
+//         newFileList = newFileList->next;
+//         crawl = crawl->next;
+//     }
+//     newFileList->next = NULL;
+//     cout << "commit worked" << endl;
+// }
