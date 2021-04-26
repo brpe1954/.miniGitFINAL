@@ -81,6 +81,7 @@ void miniGit::addFile(string file_to_add)
     }
     return;
 }
+
 void miniGit::rmFile(string file_to_remove)
 {
     if (commit_head == NULL)
@@ -157,38 +158,50 @@ void miniGit::commit()
     // cout << "fileCrawl's filename before looping: " << fileCrawl->fileName << endl;
     // cout << "fileCrawl's next filename: " << fileCrawl->next->fileName << endl;
 
-    while (fileCrawl->next != NULL)
+    while (fileCrawl != NULL)
     {
-        if(fs::exists(fileCrawl->fileName + "__" + fileCrawl->fileVersion)) //if file hasnt been added to .minigit before
+        if(fs::exists(".minigit/" + fileCrawl->fileName + "__" + fileCrawl->fileVersion)) //if file hasnt been added to .minigit before
         {
-            if (isEqual(fileCrawl->fileName, fileCrawl->fileName + "__" +fileCrawl->fileVersion))
+            if (isEqual(fileCrawl->fileName, ".minigit/" + fileCrawl->fileName + "__" +fileCrawl->fileVersion))
             {
-                /* code */
+                cout << fileCrawl->fileName << " has no changes, commit not made for this file" << endl;
             }
-            
-            // file_copy(fileCrawl->fileName, fileCrawl->fileName + "__" + fileCrawl->fileVersion);
-        }
-        else
-        {
-            if file HAS been added, but changes have been made to the file since last commmit
-            if(!isEqual(fileCrawl->fileName, fileCrawl->fileName + fileCrawl->fileVersion))
+            else
             {
                 fileCrawl->versionNum = fileCrawl->versionNum + 1;
                 fileCrawl->fileVersion = to_string(fileCrawl->versionNum);
                 file_copy(fileCrawl->fileName, fileCrawl->fileName + "__" + fileCrawl->fileVersion);
+                cout << fileCrawl->fileName << " recieved changes, new copy version put into minigit" << endl;
             }
         }
-<<<<<<< HEAD
-        crawl = crawl->next; 
+        else
+        {
+            file_copy(fileCrawl->fileName, fileCrawl->fileName + "__" + fileCrawl->fileVersion);
+        }
+        fileCrawl = fileCrawl->next; 
     }
+
     //making new commit 
     branchNode* newCommit = new branchNode;
-        cout << "fileCrawl's filename during the loop: " << fileCrawl->fileName << endl;
->>>>>>> 8bc954f0bc16dc85d4fcc3125a682e837d620898
+    branchCrawl->next = newCommit;
+    newCommit->previous = branchCrawl;
+    newCommit->commit_ID = branchCrawl->commit_ID++;
+
+    //copying files to new commit
+    fileNode* temp = branchCrawl->file_head;
+    fileNode* newFileList = new fileNode;
+    newCommit->file_head = newFileList;
+    while(temp != nullptr)
+    {
+        newFileList->fileName = temp->fileName;
+        newFileList->fileVersion = temp->fileVersion;
+        newFileList->versionNum = temp->versionNum;
+        fileNode* next = new fileNode;
+        newFileList->next = next;
+        newFileList = newFileList->next;
+        temp = temp->next;
     }
-    file_copy(fileCrawl->fileName, fileCrawl->fileName + "__" + fileCrawl->fileVersion);
-    cout << "fileCrawl's filename during the loop: " << fileCrawl->fileName << endl;
-    cout << "finished copying!" << endl;
+
 }
 
 // void miniGit::commit()
