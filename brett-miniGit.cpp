@@ -36,11 +36,6 @@ void miniGit::init()
     commit_head = new branchNode;   // branch nodes are doubly linked lists
     commit_head->commit_ID = 0; // initial file version is 0
     commit_head->file_head = NULL; // head of file nodes stored in a singly linked 
-    // cout << "worked" << endl;
-    // fileNode* fileHead = commit_head->file_head;
-    // cout << "worked" << endl;
-    // fileHead->next = NULL;
-    // cout << "worked" << endl;
     commit_head->previous = NULL; // pointer to previous branchNode in the doubly linked list 
     commit_head->next = NULL; // pointer to the next branchNode in the doubly linked list
 }
@@ -158,6 +153,7 @@ void miniGit::commit()
 
     while(crawl != NULL)
     {
+        cout << "From branch " << crawlBranch->commit_ID << ": FileName: " << crawl->fileName + "__" + crawl->fileVersion << endl;
         if(!fs::exists(crawl->fileName + crawl->fileVersion)) //if file hasnt been added to .minigit before
         {
             file_copy(crawl->fileName, crawl->fileName + "__" + crawl->fileVersion);
@@ -183,6 +179,7 @@ void miniGit::commit()
 
     //copying old files from last commit into new list for the new commit
     fileNode* newFileList = new fileNode;
+    newCommit->file_head = newFileList;
     crawl = crawlBranch->file_head;
     while(crawl != NULL)
     {
