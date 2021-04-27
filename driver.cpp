@@ -8,14 +8,15 @@ int main(int argc, char *argv[])
     bool quit = false;
     bool initialized = false;
     string s_input;
-
+    miniGit *MG = new miniGit();
+    MG->init();
+    
     // loop until the user quits
     while (!quit)
     {
         int menuInput;
         string inputLine;
-        miniGit *MG = new miniGit();
-        MG->init();
+        
 
         cout << "======Main Menu======" << endl;
         cout << "1. Init Repo" << endl;
