@@ -177,6 +177,7 @@ void miniGit::commit()
         else
         {
             file_copy(fileCrawl->fileName, fileCrawl->fileName + "__" + fileCrawl->fileVersion);
+            cout << "New File " << fileCrawl->fileName << " added to .minigit" << endl;
         }
         fileCrawl = fileCrawl->next; 
     }
@@ -188,20 +189,28 @@ void miniGit::commit()
     newCommit->commit_ID = branchCrawl->commit_ID++;
 
     //copying files to new commit
-    fileNode* temp = branchCrawl->file_head;
-    fileNode* newFileList = new fileNode;
-    newCommit->file_head = newFileList;
-    while(temp != nullptr)
+    fileNode* headFileOfNewCommit = new fileNode;
+    fileNode* newCrawl = headFileOfNewCommit;
+    fileNode* oldCrawl = branchCrawl->file_head;
+    while(oldCrawl != nullptr)
     {
-        newFileList->fileName = temp->fileName;
-        newFileList->fileVersion = temp->fileVersion;
-        newFileList->versionNum = temp->versionNum;
-        fileNode* next = new fileNode;
-        newFileList->next = next;
-        newFileList = newFileList->next;
-        temp = temp->next;
+        newCrawl->fileName = oldCrawl->fileName;
+        newCrawl->fileVersion = oldCrawl->fileVersion;
+        newCrawl->versionNum = oldCrawl->versionNum;
+        if(oldCrawl->next != nullptr)
+        {
+            newCrawl->next = new fileNode;
+            newCrawl = newCrawl->next;
+            oldCrawl = oldCrawl->next;
+        }
+        else
+        {
+            oldCrawl = oldCrawl->next;
+        }
+        
     }
-
+    newCrawl->next = nullptr;
+    newCommit->file_head = headFileOfNewCommit;
 }
 
 // void miniGit::commit()
