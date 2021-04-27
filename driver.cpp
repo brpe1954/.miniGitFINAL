@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include "brett-miniGit.hpp"
+#include "miniGit.hpp"
 using namespace std;
 
 int main(int argc, char *argv[])
