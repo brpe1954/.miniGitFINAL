@@ -15,19 +15,23 @@ miniGit::miniGit(/* args */)
 
 miniGit::~miniGit()
 {
-    fs::remove_all(".minigit");
     branchNode *crawlBranch = commit_head;
+    branchNode *prevBranch;
+    fileNode *crawlFile;
+    fileNode *prevFile;
+    
     while (crawlBranch != NULL)
     {
-        fileNode *crawl = crawlBranch->file_head;
-        fileNode *temp = NULL;
-        while (crawl != NULL)
+        crawlFile = crawlBranch->file_head;
+        while (crawlFile != NULL)
         {
-            temp = crawl;
-            crawl = crawl->next;
-            delete temp;
+            prevFile = crawlFile->next;
+            delete crawlFile;
+            crawlFile = prevFile;
         }
-        crawlBranch = crawlBranch->next;
+        prevBranch = crawlBranch->next;
+        delete crawlBranch;
+        crawlBranch = prevBranch;
     }
 }
 
