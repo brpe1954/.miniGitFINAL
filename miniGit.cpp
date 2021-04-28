@@ -261,19 +261,21 @@ void miniGit::showCommitStructure()
     }
 }
 
-// void miniGit::checkout(int commitID)
-// {
-//     branchNode* crawler = commit_head;
-//     while(crawler->commit_ID)
-//     {
-//         crawler = crawler->next;
-//     }
-//     fileNode* temp = crawler->file_head;
+void miniGit::checkout(int commitID)
+{
+    branchNode* crawler = commit_head;
+    while(crawler->commit_ID != commitID)
+    {
+        crawler = crawler->next;
+    }
+    fileNode* temp = crawler->file_head;
 
-//     while(temp != NULL)
-//     {
-//         string miniGitDir = "./.minigit/"
-        
-//     }
+    while(temp != NULL)
+    {
+        string miniGitDir = "./.minigit/" + temp->fileName + "__" + temp->fileVersion;
+        string copyCommand = "cp " + miniGitDir + " " + temp->fileName;
+        system(copyCommand.c_str());
+        temp = temp->next;
+    }
 
-// }
+}
