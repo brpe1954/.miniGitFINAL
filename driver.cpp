@@ -10,13 +10,17 @@ int main(int argc, char *argv[])
     string s_input;
     miniGit *MG = new miniGit();
     MG->init();
-    
+
     // loop until the user quits
     while (!quit)
     {
         int menuInput;
+        int checkout_int;
         string inputLine;
-        
+        string checkout_input;
+        string checkout_bool;
+        bool checkout_warning;
+
         MG->showCommitStructure();
 
         cout << "======Main Menu======" << endl;
@@ -24,11 +28,11 @@ int main(int argc, char *argv[])
         cout << "2. Add file" << endl;
         cout << "3. Remove file" << endl;
         cout << "4. Commit" << endl;
-        cout << "5. Quit" << endl;
+        cout << "5. Checkout" << endl;
+        cout << "6. Quit" << endl;
 
         getline(cin, inputLine);
-        cout << "YOU ENTERED => " << inputLine << endl;
-        if (inputLine == "1" || inputLine == "2" || inputLine == "3" || inputLine == "4" || inputLine == "5")
+        if (inputLine == "1" || inputLine == "2" || inputLine == "3" || inputLine == "4" || inputLine == "5" || inputLine == "6")
         {
             menuInput = stoi(inputLine);
         }
@@ -36,7 +40,7 @@ int main(int argc, char *argv[])
         {
             cout << "Please select valid menu integer input" << endl;
         }
-        
+
         switch (menuInput)
         {
         case 1:
@@ -61,25 +65,20 @@ int main(int argc, char *argv[])
             {
                 cout << "You selected 2: Add" << endl;
                 bool exists = true;
-                while(exists)
+                while (exists)
                 {
                     cout << "Enter valid filename to add" << endl;
                     getline(cin, inputLine);
-                    if(fs::exists(inputLine)){
+                    if (fs::exists(inputLine))
+                    {
                         exists = false;
                         MG->addFile(inputLine);
                     }
-                    else{
+                    else
+                    {
                         cout << "File does not exist in current directory, try again" << endl;
                     }
                 }
-
-                // cout << "Enter valid filename" << endl;
-                // getline(cin, inputLine);
-                // if (fs::exists(inputLine))
-                // {
-                //     MG->addFile(inputLine);
-                // }
             }
             break;
         case 3:
@@ -92,10 +91,11 @@ int main(int argc, char *argv[])
             {
                 cout << "You selected 3: Remove" << endl;
                 cout << "Enter valid filename to remove" << endl;
-                    getline(cin, inputLine);
-                    if(fs::exists(inputLine)){
-                        MG->rmFile(inputLine);
-                    }
+                getline(cin, inputLine);
+                if (fs::exists(inputLine))
+                {
+                    MG->rmFile(inputLine);
+                }
             }
             break;
         case 4:
@@ -111,6 +111,29 @@ int main(int argc, char *argv[])
             }
             break;
         case 5:
+            // call the checkout() function
+            if (!initialized)
+            {
+                cout << "You must initialize a repository before checking out any commits." << endl;
+            }
+            else
+            {
+                cout << "You selected 5: Checkout" << endl;
+                cout << "WARNING: after you checkout a different commit, all local changes will be discarded\n";
+                cout << "would you like to proceed? enter y or n\n";
+                getline(cin, checkout_bool);
+                if (checkout_bool == "y")
+                {
+                    cout << "Enter valid commit_ID to checkout" << endl;
+                    getline(cin, checkout_input);
+                    checkout_int = stoi(checkout_input);
+
+                    MG->checkout(checkout_int);
+                }
+            }
+            break;
+
+        case 6:
             // quit the program
             cout << "you selected quit" << endl;
             quit = true;
