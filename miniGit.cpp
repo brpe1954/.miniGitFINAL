@@ -159,16 +159,15 @@ bool isEqual(string file1, string file2)
     ifstream fileStream2;
     string fileTwo;
     fileStream2.open(file2);
-    while (getline(fileStream, fileOne) && getline(fileStream2, fileTwo))
+    while(getline(fileStream, fileOne)){}
+    while(getline(fileStream2, fileTwo)){}
+    if(fileOne.compare(fileTwo) == 0)
     {
-        if (fileOne.compare(fileTwo) != 0)
-        {
-            return false;
-        }
+        return true;
     }
-    fileStream2.close();
-    fileStream.close();
-    return true;
+    else{
+        return false;
+    }
 }
 
 void miniGit::commit()
