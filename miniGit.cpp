@@ -52,6 +52,7 @@ bool fileExistsInList(string file_to_add, fileNode *head)
         {
             return true;
         }
+        head = head->next;
     }
     return false;
 }
@@ -75,7 +76,7 @@ void miniGit::addFile(string file_to_add)
             new_file->fileVersion = "0";
             new_file->versionNum = 0;
             new_file->next = NULL;
-            commit_head->file_head = new_file;
+            branchCrawl->file_head = new_file;
             cout << file_to_add << " was added" << endl;
         }
         else
@@ -103,39 +104,44 @@ void miniGit::addFile(string file_to_add)
 
 void miniGit::rmFile(string file_to_remove)
 {
-
+    
     branchNode *crawler = commit_head;
     while(crawler->next != NULL){
         crawler = crawler->next;
     }
     fileNode *curr = crawler->file_head;
     fileNode *prev = NULL;
-    while (curr != NULL)
+    cout << "worked\n";
+    if(fileExistsInList(file_to_remove, curr))
     {
-        if (curr->fileName == file_to_remove)
+        while (curr != NULL)
         {
-            if (prev != NULL) //
+            if (curr->fileName == file_to_remove)
             {
-                prev->next = curr->next;
-                delete curr;
-                
-                cout << file_to_remove << " has been removed from this commit" << endl;
-                return;
+                if (prev != NULL) //
+                {
+                    prev->next = curr->next;
+                    delete curr;
+                    cout << file_to_remove << " has been removed from this commit" << endl;
+                    return;
+                }
+                else
+                {
+                    commit_head->file_head = curr->next; //
+                    cout << file_to_remove << " has been removed from this commit" << endl;
+                    delete curr;
+                    return;
+                }
             }
-            else
-            {
-                commit_head->file_head = curr->next; //
-                cout << file_to_remove << " has been removed from this commit" << endl;
-                delete curr;
-                return;
-            }
+            // keep iterating across the SLL until we find the file_to_remove we are looking for
+            prev = curr;
+            curr = curr->next;
         }
-        // keep iterating across the SLL until we find the file_to_remove we are looking for
-        prev = curr;
-        curr = curr->next;
-    }
-    cout << "file does not exist" << endl; // looped through entire fileNode SLL and did not find the file we wanted to remove
+        cout << "file does not exist" << endl; // looped through entire fileNode SLL and did not find the file we wanted to remove
 
+        return;
+    }
+    cout << "File hasnt been added to current commit" << endl;
     return;
 }
 
@@ -228,3 +234,19 @@ void miniGit::commit()
     newCrawl->next = nullptr;
     newCommit->file_head = headFileOfNewCommit;
 }
+
+// void miniGit::checkout()
+// {
+//     branchNode* crawler = commit_head;
+//     while(crawler->next != NULL)
+//     {
+//         crawler = crawler->next;
+//     }
+//     fileNode* temp = crawler->file_head;
+//     while(temp != NULL)
+//     {
+//         if()
+
+//     }
+
+// }

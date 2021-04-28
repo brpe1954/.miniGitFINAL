@@ -38,6 +38,7 @@ class miniGit
         void addFile(string file_to_add);
         void rmFile(string file_to_remove);
         void commit();
+        void checkout();
 };
 
 #endif
