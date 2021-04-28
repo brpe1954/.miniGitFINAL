@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
         int menuInput;
         string inputLine;
         
+        MG->showCommitStructure();
 
         cout << "======Main Menu======" << endl;
         cout << "1. Init Repo" << endl;

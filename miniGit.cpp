@@ -127,7 +127,7 @@ void miniGit::rmFile(string file_to_remove)
                 }
                 else
                 {
-                    commit_head->file_head = curr->next; //
+                    crawler->file_head = curr->next; //
                     cout << file_to_remove << " has been removed from this commit" << endl;
                     delete curr;
                     return;
@@ -209,7 +209,8 @@ void miniGit::commit()
     branchNode *newCommit = new branchNode;
     branchCrawl->next = newCommit;
     newCommit->previous = branchCrawl;
-    newCommit->commit_ID = branchCrawl->commit_ID++;
+    newCommit->commit_ID = branchCrawl->commit_ID + 1;
+    newCommit->next = NULL;
 
     //copying files to new commit
     fileNode *headFileOfNewCommit = new fileNode;
@@ -235,18 +236,44 @@ void miniGit::commit()
     newCommit->file_head = headFileOfNewCommit;
 }
 
-// void miniGit::checkout()
+void miniGit::showCommitStructure()
+{
+    branchNode* crawler = commit_head;
+    while(crawler != nullptr)
+    {
+        cout << "Commit " << crawler->commit_ID << " --> ";
+        fileNode* fileCrawl = crawler->file_head;
+        while(fileCrawl != NULL)
+        {
+            cout << fileCrawl->fileName + "__" + fileCrawl->fileVersion << " --> ";
+            fileCrawl = fileCrawl->next;
+        }
+        if(fileCrawl == NULL)
+        {
+            cout << "NULLPTR" << endl;
+        }
+        else
+        {
+            cout << "NEXT POINTER NOT INTIALIZED PROPERLY" << endl;
+        }
+        crawler = crawler->next;
+        cout << endl;
+    }
+}
+
+// void miniGit::checkout(int commitID)
 // {
 //     branchNode* crawler = commit_head;
-//     while(crawler->next != NULL)
+//     while(crawler->commit_ID)
 //     {
 //         crawler = crawler->next;
 //     }
 //     fileNode* temp = crawler->file_head;
+
 //     while(temp != NULL)
 //     {
-//         if()
-
+//         string miniGitDir = "./.minigit/"
+        
 //     }
 
 // }
