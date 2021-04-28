@@ -27,9 +27,16 @@ int main(int argc, char *argv[])
         cout << "5. Quit" << endl;
 
         getline(cin, inputLine);
-
-        menuInput = stoi(inputLine);
-
+        cout << "YOU ENTERED => " << inputLine << endl;
+        if (inputLine == "1" || inputLine == "2" || inputLine == "3" || inputLine == "4" || inputLine == "5")
+        {
+            menuInput = stoi(inputLine);
+        }
+        else
+        {
+            cout << "Please select valid menu integer input" << endl;
+        }
+        
         switch (menuInput)
         {
         case 1:
@@ -110,7 +117,7 @@ int main(int argc, char *argv[])
             break;
 
         default:
-            cout << "try again" << endl;
+            cout << "Error" << endl;
             break;
         }
     }
